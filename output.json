@@ -1,0 +1,102 @@
+{
+  "pr_url": "https://github.com/Sanathanvenkat/multi-agent-sql-reviewer/pull/1",
+  "pr_title": "first commit",
+  "author": "Sanathanvenkat",
+  "files_reviewed": [
+    "test.sql"
+  ],
+  "report": {
+    "verdict": "request_changes",
+    "overall_score": 5.3,
+    "security_report": {
+      "agent": "Security Agent",
+      "score": 8,
+      "comments": [
+        {
+          "severity": "low",
+          "category": "security",
+          "issue": "Overly permissive query exposing all columns",
+          "suggestion": "Specify only necessary columns in the SELECT statement to reduce data exposure",
+          "line_hint": "select * from users, orders"
+        },
+        {
+          "severity": "info",
+          "category": "security",
+          "issue": "Lack of input validation and parameterization",
+          "suggestion": "Consider using parameterized queries or prepared statements to improve security, although no user input is visible in this snippet",
+          "line_hint": "YEAR(created_at)=2024"
+        }
+      ],
+      "summary": "No critical security vulnerabilities found, but potential for improvement in query structure and data exposure"
+    },
+    "performance_report": {
+      "agent": "Performance Agent",
+      "score": 2,
+      "comments": [
+        {
+          "severity": "critical",
+          "category": "performance",
+          "issue": "SELECT * instead of explicit columns",
+          "suggestion": "Specify only the required columns in the SELECT statement",
+          "line_hint": "select *"
+        },
+        {
+          "severity": "high",
+          "category": "performance",
+          "issue": "Implicit join (Cartesian join without conditions)",
+          "suggestion": "Use explicit JOIN syntax instead of comma-separated tables",
+          "line_hint": "from users, orders"
+        },
+        {
+          "severity": "high",
+          "category": "performance",
+          "issue": "Function applied to column in WHERE clause (bypasses indexes)",
+          "suggestion": "Consider using a date range instead of the YEAR function, e.g., created_at >= '2024-01-01' AND created_at < '2025-01-01'",
+          "line_hint": "YEAR(created_at)=2024"
+        },
+        {
+          "severity": "medium",
+          "category": "performance",
+          "issue": "ORDER BY without LIMIT on large datasets",
+          "suggestion": "Consider adding a LIMIT clause to restrict the number of rows returned",
+          "line_hint": "order by created_at"
+        }
+      ],
+      "summary": "Severe performance issues due to Cartesian join, implicit join, and function applied to column in WHERE clause"
+    },
+    "style_report": {
+      "agent": "Style Agent",
+      "score": 4,
+      "comments": [
+        {
+          "severity": "medium",
+          "category": "style",
+          "issue": "Inconsistent keyword casing (YEAR should be UPPER_CASE)",
+          "suggestion": "Replace YEAR with UPPER_CASE YEAR() function",
+          "line_hint": "YEAR(created_at)=2024"
+        },
+        {
+          "severity": "medium",
+          "category": "style",
+          "issue": "Missing table aliasing for clarity",
+          "suggestion": "Use table aliases (e.g., u for users, o for orders)",
+          "line_hint": "select * from users, orders"
+        },
+        {
+          "severity": "low",
+          "category": "style",
+          "issue": "Deep nesting could be improved with CTEs or subqueries",
+          "suggestion": "Consider breaking down the query into smaller, more manageable parts",
+          "line_hint": "select * from users, orders"
+        }
+      ],
+      "summary": "SQL query has inconsistent keyword casing and missing table aliasing"
+    },
+    "critical_issues": [
+      "SELECT * instead of explicit columns",
+      "Implicit join (Cartesian join without conditions)",
+      "Function applied to column in WHERE clause (bypasses indexes)"
+    ],
+    "summary": "Security: No critical security vulnerabilities found, but potential for improvement in query structure and data exposure | Performance: Severe performance issues due to Cartesian join, implicit join, and function applied to column in WHERE clause | Style: SQL query has inconsistent keyword casing and missing table aliasing"
+  }
+}
